@@ -1,0 +1,1 @@
+g++ fact.cpp main.cpp -o math -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
