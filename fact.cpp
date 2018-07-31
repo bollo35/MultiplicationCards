@@ -42,7 +42,7 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 		explanation.setFont(font);
 		explanation.setString(ss.str());
 		explanation.setCharacterSize(40);
-		explanation.setFillColor(sf::Color::Red);
+		explanation.setFillColor(sf::Color(102, 255, 255));
 		explanation.setPosition(0,0);
 		w.draw(explanation);
 
@@ -78,7 +78,8 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 		text.setFont(font);
 		text.setString(fact_string);
 		text.setCharacterSize(80);
-		text.setFillColor(sf::Color::Red);
+		text.setFillColor(sf::Color(102, 255, 255));
+//		text.setFillColor(sf::Color::Red);
 		auto rect = text.getLocalBounds();
 		text.setPosition(size.x / 2 - rect.width/2, size.y/2 - rect.height/2);
 		w.draw(text);
