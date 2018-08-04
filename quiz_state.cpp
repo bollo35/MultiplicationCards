@@ -4,12 +4,14 @@
 #include <ctime>
 #include <exception>
 
-QuizState::QuizState(int width, int height, std::vector<int> which_facts) : 
+QuizState::QuizState(int width, int height, std::vector<int> which_facts, sf::Font& font) : 
   width_{width},
   height_{height},
   input_{0, 0, 0},
   index_{0},
-  current_fact_{0} {
+  done_{false},
+  current_fact_{0},
+  font_{font} {
 	for (auto table : which_facts) {
 		for (int i = 1; i < 10; ++i) {
 			auto fact = MultiplicationFact(table, i);
@@ -22,10 +24,6 @@ QuizState::QuizState(int width, int height, std::vector<int> which_facts) :
 	std::random_shuffle(facts_.begin(), facts_.end());
 
 	// load resources
-	if (!font_.loadFromFile("Schools Out!!!.otf")) {
-		throw std::runtime_error("Unable to open 'Schools Out!!!.otf");
-	}
-
 	if (!right_answer_.loadFromFile("celebration-short.ogg")) {
 		throw std::runtime_error("Unable to open 'celebration-short.ogg'");
 	}
@@ -51,6 +49,8 @@ void QuizState::draw(sf::RenderWindow& w) {
 }
 
 void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& stack) {
+	// make sure we don't do anything if we're done
+	if (done_) return;
 	bool answer_given = false;
 	if (event.type == sf::Event::KeyPressed) {
 		switch(event.key.code) {
@@ -123,8 +123,7 @@ void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& sta
 				answer_given = index_ > 0;
 				break;
 			case sf::Keyboard::Key::Escape:
-				// TODO: transition to QuitState here
-				stack.pop();
+				done_ = true;
 				return;
 				break;
 		}
@@ -143,7 +142,7 @@ void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& sta
 			current_fact_++;
 			if (current_fact_ == facts_.size()) {
 				// TODO: transition to EndOfReview
-				stack.pop();
+				done_ = true;
 			}
 		} else {
 			sound.setBuffer(wrong_answer_);
@@ -156,4 +155,8 @@ void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& sta
 		input_[0] = 0;
 		input_[1] = 0;
 	}
+}
+
+bool QuizState::done() {
+	return done_;
 }
