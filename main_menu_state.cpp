@@ -32,7 +32,7 @@ void MainMenuState::draw(sf::RenderWindow& w) {
 	char num_str[2] = {0, 0};
 	for (int x = 0; x < 3; ++x) {
 		for (int y = 0; y < 3; ++y) {
-			auto num = 3*x + y + 1;
+			auto num = x + 3*y + 1;
 			sprintf(num_str, "%d", num);
 			number.setString(num_str);
 			auto rect = number.getLocalBounds();
@@ -52,19 +52,20 @@ void MainMenuState::draw(sf::RenderWindow& w) {
 	}
 }
 
-void MainMenuState::update(sf::Event event, std::stack< std::unique_ptr<State> >& stack) {
+void MainMenuState::update(sf::Event event, std::stack<State*>& stack) {
 	if (event.type == sf::Event::MouseButtonPressed && 
 		event.mouseButton.button == sf::Mouse::Button::Left) {
 		auto width = width_ / 3;
 		auto height = height_ / 3;
 		auto x = event.mouseButton.x / width;
 		auto y = event.mouseButton.y / height;
-		auto num = 3 * x + y + 1;
+		auto num = x + 3*y + 1;
 		selected_ ^= 1 << (num - 1);
 	} else if (event.type == sf::Event::KeyPressed) {
 		switch (event.key.code) {
 		case sf::Keyboard::Key::Return: {
-	       
+			// avoid trying to progress without any facts selected
+			if (selected_ == 0) return;
 			std::vector<int> which_facts;
 			auto selected = selected_;
 			for (int i = 0; i < 9; ++i) {
@@ -72,7 +73,7 @@ void MainMenuState::update(sf::Event event, std::stack< std::unique_ptr<State> >
 					which_facts.push_back(i+1);
 				selected >>= 1;
 			}
-			stack.push( std::make_unique<QuizState>(width_, height_, which_facts, font_) );
+			stack.push( new QuizState(width_, height_, which_facts, font_) );
 		}
 			break;
 		case sf::Keyboard::Key::Escape:
@@ -85,5 +86,3 @@ void MainMenuState::update(sf::Event event, std::stack< std::unique_ptr<State> >
 bool MainMenuState::done() {
 	return done_;
 }
-
-MainMenuState::~MainMenuState() { std::cerr << "Destructor called!" << std::endl; }

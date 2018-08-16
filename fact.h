@@ -9,6 +9,7 @@ class MultiplicationFact {
 		void update_response_time(int response_time);
 		bool check_answer(int answer);
 		void draw(sf::RenderWindow& w, const sf::Font& font);
+		bool is_flipped();
 	private:
 		int op1;
 		int op2;

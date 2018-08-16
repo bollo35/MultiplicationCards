@@ -43,7 +43,7 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 		explanation.setString(ss.str());
 		explanation.setCharacterSize(40);
 		explanation.setFillColor(sf::Color(102, 255, 255));
-		explanation.setPosition(0,0);
+		explanation.setPosition(0,explanation.getCharacterSize());
 		w.draw(explanation);
 
 		auto position = explanation.getGlobalBounds();
@@ -84,4 +84,8 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 		text.setPosition(size.x / 2 - rect.width/2, size.y/2 - rect.height/2);
 		w.draw(text);
 	}
+}
+
+bool MultiplicationFact::is_flipped() {
+	return flipped;
 }

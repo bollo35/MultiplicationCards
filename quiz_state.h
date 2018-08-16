@@ -8,7 +8,7 @@ class QuizState : public State {
 	public:
 		QuizState(int width, int height, std::vector<int> which_facts, sf::Font& font);
 		virtual void draw(sf::RenderWindow& w);
-		virtual void update(sf::Event event,std::stack<std::unique_ptr<State> >& stack);
+		virtual void update(sf::Event event, std::stack<State*>& stack);
 		virtual bool done();
 	private:
 		std::vector<MultiplicationFact> facts_;
@@ -16,6 +16,7 @@ class QuizState : public State {
 		int height_;
 		int index_;
 		int current_fact_;
+		int num_correct_;
 		char input_[3];
 		bool done_;
 		sf::Font& font_;

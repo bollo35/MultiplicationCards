@@ -5,9 +5,9 @@ class MainMenuState : public State {
 	public:
 		MainMenuState(int width, int height, sf::Font& font, int selected=0);
 		virtual void draw(sf::RenderWindow& w);
-		virtual void update(sf::Event, std::stack< std::unique_ptr<State> >& stack);
+		virtual void update(sf::Event event,std::stack<State*>& stack);
 		virtual bool done();
-		~MainMenuState();
+//		~MainMenuState();
 	private:
 		int selected_;
 		int width_;

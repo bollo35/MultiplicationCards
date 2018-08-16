@@ -16,12 +16,10 @@ int main(int argc, char** argv) {
 	// begin the SFML things!
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Math game!");
 	std::vector<int> which_facts = {2, 3, 4};
-	std::stack<std::unique_ptr<State> > state_stack;
-	state_stack.push(std::make_unique<MainMenuState>(800, 600, font, 0));
+	std::stack<State*> state_stack;
+	state_stack.push(new MainMenuState(800, 600, font, 0));
 	while ( window.isOpen() ) {
 		if (state_stack.empty()) window.close();
-
-		bool state_finished = false;
 
 		sf::Event event;
 		while ( window.pollEvent(event) ) {
@@ -30,23 +28,21 @@ int main(int argc, char** argv) {
 			} else {
 				auto& state = state_stack.top();
 				state->update(event, state_stack);
-				state_finished = state->done();
 			}
 		}
 
-		if (state_finished) {
-//			std::cerr << "----Removing a state-----\n";
+		while (!state_stack.empty() && state_stack.top()->done()) {
+			auto& ptr = state_stack.top();
+			delete ptr;
 			state_stack.pop();
-//			std::cerr << "Stack popped!\n";
-		} else {
+		}
+
+		if (!state_stack.empty()) {
 			window.clear();
 			auto& state = state_stack.top();
 			state->draw(window);
-//			std::cerr << "Drawing\n";
 			window.display();
 		}
-//		std::cerr << "End of loop\n";
 	}
-//	std::cerr <<"Normal exit\n";
 	return 0;
 }

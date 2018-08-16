@@ -1,16 +1,19 @@
 #include "quiz_state.h"
+#include "end_of_review_state.h"
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <exception>
+#include <sstream>
 
 QuizState::QuizState(int width, int height, std::vector<int> which_facts, sf::Font& font) : 
   width_{width},
   height_{height},
-  input_{0, 0, 0},
   index_{0},
-  done_{false},
   current_fact_{0},
+  num_correct_{0},
+  input_{0, 0, 0},
+  done_{false},
   font_{font} {
 	for (auto table : which_facts) {
 		for (int i = 1; i < 10; ++i) {
@@ -34,6 +37,14 @@ QuizState::QuizState(int width, int height, std::vector<int> which_facts, sf::Fo
 }
 
 void QuizState::draw(sf::RenderWindow& w) {
+	std::stringstream ss(std::stringstream::in | std::stringstream::out);
+	ss << (current_fact_+1) << " of " << facts_.size();
+	sf::Text progress;
+	progress.setString(ss.str());
+	progress.setCharacterSize(40);
+	progress.setFont(font_);
+	progress.setPosition(0, 0);
+
 	auto color = sf::Color(255, 102, 178);
 	sf::Text input_string;
 	input_string.setString(std::string(input_));
@@ -45,10 +56,11 @@ void QuizState::draw(sf::RenderWindow& w) {
 	                          height_ / 2 + input_rect.height); // kind of a guess...
 
 	w.draw(input_string);
+	w.draw(progress);
 	facts_[current_fact_].draw(w, font_);
 }
 
-void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& stack) {
+void QuizState::update(sf::Event event, std::stack<State*>& stack) {
 	// make sure we don't do anything if we're done
 	if (done_) return;
 	bool answer_given = false;
@@ -134,6 +146,8 @@ void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& sta
 		auto is_correct = facts_[current_fact_].check_answer(input_answer);
 		sf::Sound sound;
 		if (is_correct) {
+			if (!facts_[current_fact_].is_flipped())
+				++num_correct_;
 			sound.setBuffer(right_answer_);
 			sound.play();
 			sf::Clock clock;
@@ -143,6 +157,7 @@ void QuizState::update(sf::Event event, std::stack<std::unique_ptr<State> >& sta
 			if (current_fact_ == facts_.size()) {
 				// TODO: transition to EndOfReview
 				done_ = true;
+				stack.push( new EndOfReviewState(width_, height_, num_correct_, facts_.size(), font_) );
 			}
 		} else {
 			sound.setBuffer(wrong_answer_);
