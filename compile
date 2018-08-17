@@ -1,1 +1,0 @@
-g++ fact.cpp quiz_state.cpp main_menu_state.cpp main.cpp -o math -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
