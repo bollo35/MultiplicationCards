@@ -1,21 +1,17 @@
 #include <iostream>
-#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "main_menu_state.h"
 #include <stack>
+#include "main_menu_state.h"
 
 int main(int argc, char** argv) {
-	// load font
 	sf::Font font;
 	if (!font.loadFromFile("Schools Out!!!.otf")) {
 		std::cerr << "Unable to load 'Schools Out!!!.otf'" << std::endl;
 		return 1;
 	}
 
-	// begin the SFML things!
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Math game!");
-	std::vector<int> which_facts = {2, 3, 4};
 	std::stack<State*> state_stack;
 	state_stack.push(new MainMenuState(800, 600, font, 0));
 	while ( window.isOpen() ) {

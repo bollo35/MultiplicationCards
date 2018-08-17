@@ -150,7 +150,6 @@ void QuizState::update(sf::Event event, std::stack<State*>& stack) {
 				++num_correct_;
 			sound.setBuffer(right_answer_);
 			sound.play();
-			sf::Clock clock;
 			while (sound.getStatus() == sf::SoundSource::Playing)
 				;
 			current_fact_++;

@@ -1,6 +1,5 @@
 #include "end_of_review_state.h"
 #include <sstream>
-#include <iomanip>
 
 EndOfReviewState::EndOfReviewState(int width, int height, int num_correct, int num_facts, sf::Font& font) :
   width_{width},
@@ -18,7 +17,7 @@ void EndOfReviewState::draw(sf::RenderWindow& w) {
 	// determine percentage correct
 	auto score = (double) num_correct_ / (double) num_facts_;
 	std::stringstream ss(std::stringstream::in | std::stringstream::out);
-	ss << std::fixed << std::setprecision(2) << "You got " << num_correct_ << " of " << num_facts_ << " correct" << ((score > 0.79) ? "!" : ".") << "\n";
+	ss << "You got " << num_correct_ << " of " << num_facts_ << " correct" << ((score > 0.79) ? "!" : ".") << "\n";
 	if (score > 0.89) {
 		ss << "GREAT JOB!";
 	} else if (score > 0.69) {

@@ -24,10 +24,12 @@ void MultiplicationFact::update_response_time(int response_time) {
 
 bool MultiplicationFact::check_answer(int answer) {
 	auto is_correct = op1*op2 == answer;
-	// adjust time limit for next time
+	/*
+	// TODO: adjust time limit for next time
 	if (is_correct) {
 	} else {
 	}
+	*/
 	return is_correct;
 }
 
@@ -68,7 +70,7 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 			position = explanation.getGlobalBounds();
 		}
 		explanation.setCharacterSize(50);
-		explanation.setString("Guess again!");
+		explanation.setString("Try again!");
 		auto dimensions = explanation.getLocalBounds();
 		explanation.setPosition(size.x / 2 - dimensions.width / 2, position.top + position.height /*+ group_y*/);
 		w.draw(explanation);
@@ -79,7 +81,6 @@ void MultiplicationFact::draw(sf::RenderWindow& w, const sf::Font& font) {
 		text.setString(fact_string);
 		text.setCharacterSize(80);
 		text.setFillColor(sf::Color(102, 255, 255));
-//		text.setFillColor(sf::Color::Red);
 		auto rect = text.getLocalBounds();
 		text.setPosition(size.x / 2 - rect.width/2, size.y/2 - rect.height/2);
 		w.draw(text);
